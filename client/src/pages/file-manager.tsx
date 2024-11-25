@@ -27,8 +27,8 @@ const FileManagerPage: FC = () => {
   }, [currentCatalog]);
   return (
     <AuthorizedLayout userName={currentUser?.data?.name}>
-      {currentCatalogContent?.data?.contains?.catalogs.map((item: any) => <>{item.id} {item.name}</>)}
-      {currentCatalogContent?.data?.contains?.files.map((item: any) => <>{item.id} {item.name}</>)}
+      {currentCatalogContent?.data?.contains?.catalogs.map((item: any) => <div onClick={() => {setCurrentCatalog(item.id)}}>{item.id} {item.name}</div>)}
+      {currentCatalogContent?.data?.contains?.files.map((item: any) => <div>{item.id} {item.name} {item.verboseName}</div>)}
 
     </AuthorizedLayout>
   )

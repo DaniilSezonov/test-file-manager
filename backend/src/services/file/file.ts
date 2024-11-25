@@ -22,7 +22,7 @@ const FileService = {
       const fileNameOrigin = file.name;
       console.log(file);
       await Bun.write(filePath, file);
-      const createdFile = await FileManager.createFile(uuid, fileNameOrigin, file.size)
+      const createdFile = await FileManager.createFile(uuid, fileNameOrigin, file.size, catalogId)
       return {
         status: Statuses.OK,
         result: createdFile,

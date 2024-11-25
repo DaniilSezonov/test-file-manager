@@ -9,12 +9,12 @@ const FileManagerPage: FC = () => {
     return await backend.users.current.get({fetch: {credentials: "include"}});
   });
   const { value: currentCatalogContent, execute: fetchCurrentCatalogContent } = useAsync(async() => {
-    return await backend.catalog.index.get();
-  })
+    return await backend.catalog.id({id: currentCatalog as string}).get({fetch: {credentials: "include"}});
+  });
   useEffect(() => {
     void fetchCurrentUser();
   }, [])
-  console.log(currentUser);
+  console.log(currentCatalogContent);
   useEffect(() => {
     if (currentUser?.data?.rootCatalog?.id) {
       setCurrentCatalog(currentUser?.data?.rootCatalog?.id);
@@ -26,7 +26,11 @@ const FileManagerPage: FC = () => {
     }
   }, [currentCatalog]);
   return (
-    <AuthorizedLayout userName={currentUser?.data?.name}>TEST</AuthorizedLayout>
+    <AuthorizedLayout userName={currentUser?.data?.name}>
+      {currentCatalogContent?.data?.contains?.catalogs.map((item: any) => <>{item.id} {item.name}</>)}
+      {currentCatalogContent?.data?.contains?.files.map((item: any) => <>{item.id} {item.name}</>)}
+
+    </AuthorizedLayout>
   )
 }
 

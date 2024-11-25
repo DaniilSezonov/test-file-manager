@@ -7,28 +7,22 @@ export default new Elysia({ name: "catalog" })
   .use(authPlugin)
   .group("/catalog", (app) =>
     app
-      .get("/:id?", async ({ params: { id }, userId, set }) => {
-        if (userId && id) {
-          const catalog = await CatalogManager.getCatalogById(parseFloat(id));
-          if (!catalog) {
-            set.status = 404
-            throw new Error("Not found.")
-          }
-          const childCatalogs = await CatalogManager.getCatalogItems(catalog.id);
-          return {
-            id: catalog.id,
-            isRoot: catalog.isRoot,
-            name: catalog.name,
-            contains: {
-              files: [],
-              catalogs: childCatalogs,
-            }
+      .get("/id/:id", async ({ params: { id }}) => {
+        const catalog = await CatalogManager.getCatalogById(parseFloat(id));
+        const { catalogs, files } = await CatalogManager.getCatalogItems(catalog.id);
+        return {
+          id: catalog.id,
+          isRoot: catalog.isRoot,
+          name: catalog.name,
+          contains: {
+            files: files,
+            catalogs: catalogs,
           }
         }
       },
       {
         detail: {
-          description: "List catalog",
+          description: "Detail catalog",
           tags: ["CatalogRoutes"]
         },
       })

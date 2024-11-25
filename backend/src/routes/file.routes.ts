@@ -16,14 +16,19 @@ export default new Elysia({ name: "file" })
       .post("/", async ({ body, userId }) => {
         if (userId) {
           const { file, catalogId } = body;
-          const { result } = await FileService.createUserFile(userId, file, catalogId)
+          const { result } = await FileService.createUserFile(userId, file, parseFloat(catalogId))
           return result;
         }
 
       }, {
         body: t.Object({
-          file: t.File(),
-          catalogId: t.Number(),
+          file: t.File({
+            error: "File load error.",
+            writeOnly: true,
+          }),
+          catalogId: t.String({
+            error: "Invalid catalog id."
+          }),
         }),
         type: "multipart/form-data",
         detail: {

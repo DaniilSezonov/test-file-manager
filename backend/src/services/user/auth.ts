@@ -1,4 +1,4 @@
-import UserModel from "@database/models/user.model";
+import UserManager from "@database/managers/user.manager";
 import { Statuses, ServiceMethodResult } from "@services/index";
 
 const AuthService = {
@@ -7,17 +7,17 @@ const AuthService = {
       id: number;
       email: string;
     }>> => {
-      if (await UserModel.isEmailExists(email)) {
+      if (await UserManager.isEmailExists(email)) {
         return {
           status: Statuses.BAD_REQUEST,
           msg: "Already registered.",
         };
       }
       const hashedPass = await Bun.password.hash(password);
-      const result = await UserModel.createUser(email, hashedPass, name);
+      const instance = await UserManager.createUser(email, hashedPass, name);
       return {
         status: Statuses.OK,
-        result,
+        result: instance,
       };
   },
   signIn: async (email: string, password: string): Promise<ServiceMethodResult<{
@@ -27,14 +27,14 @@ const AuthService = {
     name: string | null;
     createdAt: Date;
   }>> => {
-    const isEmailExists = await UserModel.isEmailExists(email);
+    const isEmailExists = await UserManager.isEmailExists(email);
     if (!isEmailExists) {
       return {
         status: Statuses.BAD_REQUEST,
         msg: "Wrong email or password."
       }
     }
-    const user = await UserModel.getUserByEmail(email);
+    const user = await UserManager.getUserByEmail(email);
     const isPasswordVerified = await Bun.password.verify(password, user.password)
     if (!isPasswordVerified) {
       return {

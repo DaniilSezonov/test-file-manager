@@ -3,7 +3,7 @@ import authPlugin from "../plugins/auth";
 import FileService from "@services/file/file";
 
 
-export default new Elysia({ name: "user" })
+export default new Elysia({ name: "file" })
   .use(authPlugin)
   .group("/files", (app) =>
     app

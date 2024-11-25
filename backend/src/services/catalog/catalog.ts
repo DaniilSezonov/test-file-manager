@@ -1,8 +1,15 @@
-import CatalogModel from "@database/models/catalog.model";
+import CatalogManager from "@database/managers/catalog.manager";
 import { Statuses, ServiceMethodResult } from "@services/index";
 
 const CatalogService = {
-  getRootUserCatalog: async (id: string):
+  createCatalog: async (name: string, ownerId: number, parentCatalogId: number) => {
+    const catalog = await CatalogManager.createCatalog(name, ownerId, parentCatalogId);
+    return {
+      status: Statuses.OK,
+      result: catalog,
+    }
+  },
+  getRootUserCatalog: async (userId: string):
     Promise<ServiceMethodResult<{
       id: number;
       name: string;
@@ -10,7 +17,7 @@ const CatalogService = {
       owner: number;
       isRoot: boolean | null;
     }>> => {
-      const currentUserRootCatalog = await CatalogModel.getRootUserCatalog(parseFloat(id))
+      const currentUserRootCatalog = await CatalogManager.getRootUserCatalog(parseFloat(userId))
       return {
         status: Statuses.OK,
         result: currentUserRootCatalog,

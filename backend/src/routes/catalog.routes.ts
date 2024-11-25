@@ -1,18 +1,29 @@
 import Elysia, { t } from "elysia";
 import CatalogService from "@services/catalog/catalog";
-import { Statuses } from "@services/index";
 import authPlugin from "../plugins/auth";
+import CatalogManager from "@database/managers/catalog.manager";
 
 export default new Elysia({ name: "catalog" })
   .use(authPlugin)
   .group("/catalog", (app) =>
     app
-      .get("/", async ({ cookie, userId }) => {
-        if (userId) {
-          const rootCatalog = await CatalogService.getRootUserCatalog(userId);
-          if (rootCatalog.status === Statuses.OK) {
-            return rootCatalog;
-          } 
+      .get("/:id?", async ({ params: { id }, userId, set }) => {
+        if (userId && id) {
+          const catalog = await CatalogManager.getCatalogById(parseFloat(id));
+          if (!catalog) {
+            set.status = 404
+            throw new Error("Not found.")
+          }
+          const childCatalogs = await CatalogManager.getCatalogItems(catalog.id);
+          return {
+            id: catalog.id,
+            isRoot: catalog.isRoot,
+            name: catalog.name,
+            contains: {
+              files: [],
+              catalogs: childCatalogs,
+            }
+          }
         }
       },
       {
@@ -21,7 +32,26 @@ export default new Elysia({ name: "catalog" })
           tags: ["CatalogRoutes"]
         },
       })
-      .post("/", async () => [], {
+      .post("/", async ({ userId, body }) => {
+        const { name, parentCatalogID } = body;
+        if (userId) {
+          const { result: catalog } = await CatalogService.createCatalog(
+            name,
+            parseInt(userId),
+            parentCatalogID
+          )
+          if (catalog)
+            return {
+              id: catalog.id,
+              name: catalog.name,
+            }
+        }
+      },
+      {
+        body: t.Object({
+          name: t.String({minLength: 1}),
+          parentCatalogID: t.Integer(),
+        }),
         detail: {
           description: "Create catalog",
           tags: ["CatalogRoutes"]

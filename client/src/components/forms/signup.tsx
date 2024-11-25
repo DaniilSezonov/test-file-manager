@@ -12,7 +12,7 @@ const SignUpForm: FC = () => {
 	const [errorMsg, setErrorMsg] = useState("");
 	const submitForm = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		const { data, error, status } = await backend.users.signup.post({email: login, password, name});
+		const { data, error, status } = await backend.auth.signup.post({email: login, password, name});
     if (status === 200 && data) {
       navigate("/signin")
     }

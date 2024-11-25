@@ -28,6 +28,10 @@ const authorizedRouter = createBrowserRouter([
   {
     path: "/",
     Component: FileManager,
+  },
+  {
+    path: "*",
+    Component: FileManager,
   }
 ])
 

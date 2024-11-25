@@ -1,63 +1,35 @@
-import Elysia, { error, t } from "elysia";
-import AuthService from "@services/user/auth";
-import { jwt } from '@elysiajs/jwt';
+import Elysia, { t } from "elysia";
+import authPlugin from "../plugins/auth";
+
+import CatalogService from "@services/catalog/catalog";
+import UserManager from "@database/managers/user.manager";
 
 export default new Elysia({ name: "user" })
-  .use(jwt<"jwt">({
-    name: 'jwt',
-    secret: process.env.JWT_SECRETS! ?? "MY_TEST_SECRET))",
-  }))
+  .use(authPlugin)
   .group("/users", (app) =>
     app
-      .post("/signup", async ({ body, error }) => {
-        const { name, email, password } = body;
-        const { status, msg, result } = await AuthService.signUp(email, password, name);
-        if (result) {
-          return result;
-        }
-        if (status !== 200 && !result) {
-          error(status, msg);
-        }
-      },
-        {
-          body: t.Object({
-            email: t.String({
-              format: "email",
-            }),
-            name: t.String({
-              minLength: 6,
-            }),
-            password: t.String({ minLength: 12 })
-          }),
-          detail: {
-            description: "Sign Up",
-            tags: ["UserRoutes"]
+      .get("/current", async ({ userId }) => {
+        if (userId) {
+          const currentUser = await UserManager.getUserById(userId);
+          const { result: rootCatalog } = await CatalogService.getRootUserCatalog(userId);
+          return {
+            id: currentUser.id,
+            name: currentUser.name,
+            createdAt :currentUser.createdAt,
+            email: currentUser.email,
+            rootCatalog: {
+              id: rootCatalog?.id,
+              isRoot: rootCatalog?.isRoot,
+              name: rootCatalog?.name,
+              createdAt: rootCatalog?.createdAt
+            }
           }
         }
-      )
-      .post("/signin", async ({ body, error, jwt }) => {
-        const { email, password } = body;
-        const { status, msg, result } = await AuthService.signIn(email, password);
-        if (status !== 200) {
-          error(status, msg);
-        }
-        if (result) {
-          const token = await jwt.sign({
-            sub: result.id.toString(),
-          })
-          return {token};
-        }
-        error(500)
-      }, {
-        body: t.Object({
-          email: t.String({
-            format: "email",
-          }),
-          password: t.String({ minLength: 12 }),
-        }),
+      },
+      {
         detail: {
-          description: "Sign In",
+          description: "User info",
           tags: ["UserRoutes"]
-        }
+        },
       })
   )

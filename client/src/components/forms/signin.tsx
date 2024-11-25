@@ -13,7 +13,7 @@ const SignInForm: FC = () => {
 	const [errorMsg, setErrorMsg] = useState("");
 	const submitForm = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
-		const { data, error } = await backend.users.signin.post({email: login, password});
+		const { data, error } = await backend.auth.signin.post({email: login, password});
 		if (error) {
 			const msg = getError(error);
 			if (msg) setErrorMsg(msg);

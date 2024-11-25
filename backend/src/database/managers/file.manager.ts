@@ -3,12 +3,12 @@ import { eq } from "drizzle-orm";
 
 import { files } from "@database/schema/file/file.schema";
 
-const FileModel = {
-    createFile: async (name: string, size: number) => {
+const FileManager = {
+    createFile: async (name: string, verboseName: string, size: number) => {
       return (await db
         .insert(files)
-        .values({ name, size })
-        .returning({ id: files.id, name: files.name, size: files.size })
+        .values({ name, size, verboseName })
+        .returning({ id: files.id, name: files.name, size: files.size, verboseName: files.verboseName })
         .execute())?.[0]
     },
     getFileById: async (id: number) => {
@@ -17,4 +17,4 @@ const FileModel = {
     },
   }
   
-  export default FileModel;
+  export default FileManager;

@@ -28,26 +28,42 @@ const FileManagerPage: FC = () => {
   useEffect(() => {
     void fetchCurrentUser();
   }, []);
-  const currentCatalog = useMemo(() => currentCatalogContent?.data?.id
-    ? {
-        id: currentCatalogContent?.data?.id,
-        name: currentCatalogContent?.data?.name,
-      }
-    : {
-        id: currentUser?.data?.rootCatalog?.id,
-        name: currentUser?.data?.rootCatalog?.name,
-      }, [currentCatalogContent?.data?.id, currentUser]);
+  const currentCatalog = useMemo(
+    () =>
+      currentCatalogContent?.data?.id
+        ? {
+            id: currentCatalogContent?.data?.id,
+            name: currentCatalogContent?.data?.name,
+          }
+        : {
+            id: currentUser?.data?.rootCatalog?.id,
+            name: currentUser?.data?.rootCatalog?.name,
+          },
+    [currentCatalogContent?.data?.id, currentUser],
+  );
   console.log(currentCatalog);
   useEffect(() => {
     if (currentUser?.data?.rootCatalog.id) {
       fetchCurrentCatalogContent(currentUser.data?.rootCatalog.id);
-      setCurrentPath([{id: currentUser.data?.rootCatalog?.id, name: "/"}])
+      setCurrentPath([{ id: currentUser.data?.rootCatalog?.id, name: "/" }]);
     }
   }, [currentUser]);
   console.log(currentPath);
+  const [uploadedFiles, setUploadedFiles] = useState<{
+    id: number;
+    name: string;
+    size: number;
+    verboseName: string;
+  }[]>([]);
   return (
     <AuthorizedLayout userName={currentUser?.data?.name}>
-      <DirectoryControlMenu className="py-4 w-full" />
+      <DirectoryControlMenu
+        className="py-4 w-full"
+        onFileUploaded={(data) => {
+          setUploadedFiles((prev) => prev.concat(data));
+        }}
+        currentCatalogId={currentCatalog.id} 
+      />
       <Breadcrumbs
         className="pb-6"
         path={currentPath}
@@ -69,13 +85,25 @@ const FileManagerPage: FC = () => {
             name={item.name}
             id={item.id}
             onOpen={() => {
-              setCurrentPath((prev) => prev.concat({id: item.id, name: item.name}))
+              setCurrentPath((prev) =>
+                prev.concat({ id: item.id, name: item.name }),
+              );
               fetchCurrentCatalogContent(item.id);
             }}
           />
         ))}
         {currentCatalogContent?.data?.contains?.files.map((item: any) => (
           <FileCard
+            key={item.id}
+            id={item.id}
+            name={item.name}
+            size={item.size}
+            extension={item.verboseName.split(".")?.[1] ?? undefined}
+          />
+        ))}
+        {uploadedFiles.map((item) => (
+          <FileCard
+            key={item.id}
             id={item.id}
             name={item.name}
             size={item.size}

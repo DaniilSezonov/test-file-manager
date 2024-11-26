@@ -16,7 +16,7 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
   className,
 }) => {
   return (
-    <div className={classNames("flex gap-2 items-center", className)}>
+    <div className={classNames("flex gap-1 items-center", className)}>
       <div
         onClick={() => onBackButtonClick()}
         className="text-xl font-semibold cursor-pointer select-none pr-2"
@@ -24,7 +24,7 @@ const Breadcrumbs: FC<BreadcrumbsProps> = ({
         {"<--"}
       </div>
       {path.map((item) => (
-        <span className="text-xl select-none">{item.name}</span>
+        <span key={item.id} className="text-xl select-none">{item.name}</span>
       ))}
     </div>
   );

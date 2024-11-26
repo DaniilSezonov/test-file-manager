@@ -12,7 +12,9 @@ type UseAsyncWrappedFunctResult<T, E> = Promise<{ result: T; error: E }>;
 
 const useAsync = <T = any, A extends any[] = [], E = Error>(
   asyncFunction: (...arg: A) => Promise<T>,
-): UseAsyncReturnType<T, E> & { execute: (...args: A) => UseAsyncWrappedFunctResult<T, E> } => {
+): UseAsyncReturnType<T, E> & {
+  execute: (...args: A) => UseAsyncWrappedFunctResult<T, E>;
+} => {
   const [status, setStatus] = useState<AsyncStatuses>("idle");
   const [value, setValue] = useState<T>();
   const [error, setError] = useState<E>();

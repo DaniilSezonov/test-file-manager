@@ -10,4 +10,4 @@ export type ServiceMethodResult<R> = {
   status: Statuses;
   msg?: string;
   result?: R;
-}
+};

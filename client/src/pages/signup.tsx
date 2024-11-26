@@ -9,7 +9,7 @@ const SignupPage: FC = () => {
         <SignUpForm />
       </div>
     </UnauthorizedLayout>
-  )
-}
+  );
+};
 
 export default SignupPage;

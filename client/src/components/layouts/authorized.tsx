@@ -3,12 +3,15 @@ import Cookies from "js-cookie";
 
 type AuthorizedLayoutProps = {
   userName: string;
-}
-const AuthorizedLayout: FC<PropsWithChildren<AuthorizedLayoutProps>> = ({ children, userName }) => {
+};
+const AuthorizedLayout: FC<PropsWithChildren<AuthorizedLayoutProps>> = ({
+  children,
+  userName,
+}) => {
   const logout = () => {
     Cookies.remove("auth");
     window.location.reload();
-  }
+  };
   return (
     <div className="bg-gray-900 w-[100vw] h-[100vh]">
       <div className="h-24 flex py-4 bg-gray-800">
@@ -23,11 +26,9 @@ const AuthorizedLayout: FC<PropsWithChildren<AuthorizedLayoutProps>> = ({ childr
           Logout
         </div>
       </div>
-      <div className="py-6 px-4">
-        {children}
-      </div>
+      <div className="py-6 px-4">{children}</div>
     </div>
-  )
-}
+  );
+};
 
 export default AuthorizedLayout;

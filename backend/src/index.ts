@@ -7,9 +7,8 @@ import authRoutes from "./routes/auth.routes";
 import fileRoutes from "./routes/file.routes";
 import catalogRoutes from "./routes/catalog.routes";
 
-
 const app = new Elysia()
-  .use(cors({origin: "localhost:5173"}))
+  .use(cors({ origin: "localhost:5173" }))
   .use(swagger())
   .use(userRoutes)
   .use(authRoutes)
@@ -18,7 +17,7 @@ const app = new Elysia()
   .listen(3000);
 
 console.log(
-  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`
+  `🦊 Elysia is running at ${app.server?.hostname}:${app.server?.port}`,
 );
 export { app };
 export type App = typeof app;

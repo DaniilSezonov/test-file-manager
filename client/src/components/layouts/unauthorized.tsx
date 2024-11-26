@@ -2,8 +2,11 @@ import { FC, PropsWithChildren } from "react";
 
 type UnauthorizedLayoutProps = {
   title?: string;
-}
-const UnauthorizedLayout: FC<PropsWithChildren<UnauthorizedLayoutProps>> = ({ children, title }) => {
+};
+const UnauthorizedLayout: FC<PropsWithChildren<UnauthorizedLayoutProps>> = ({
+  children,
+  title,
+}) => {
   return (
     <div className="bg-gray-900 w-[100vw] h-[100vh] flex justify-center items-center flex-col">
       <div className="p-1">{title}</div>
@@ -11,7 +14,7 @@ const UnauthorizedLayout: FC<PropsWithChildren<UnauthorizedLayoutProps>> = ({ ch
         {children}
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default UnauthorizedLayout;

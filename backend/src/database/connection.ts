@@ -1,4 +1,4 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
+import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 
 const postgresClient = new Pool({
@@ -7,7 +7,7 @@ const postgresClient = new Pool({
   database: process.env.POSTGRES_DATABASE,
   user: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
-})
+});
 
 const DATABASE = drizzle({ client: postgresClient });
 export default DATABASE;

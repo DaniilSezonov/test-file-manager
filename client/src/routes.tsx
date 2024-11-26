@@ -1,6 +1,4 @@
-import {
-  createBrowserRouter,
-} from "react-router-dom";
+import { createBrowserRouter } from "react-router-dom";
 import "./index.css";
 import { lazy } from "react";
 import Cookie from "js-cookie";
@@ -21,7 +19,7 @@ const unauthorizedRouter = createBrowserRouter([
   {
     path: "/signup",
     Component: SignUp,
-  }
+  },
 ]);
 
 const authorizedRouter = createBrowserRouter([
@@ -32,7 +30,7 @@ const authorizedRouter = createBrowserRouter([
   {
     path: "*",
     Component: FileManager,
-  }
-])
+  },
+]);
 
 export default Cookie.get("auth") ? authorizedRouter : unauthorizedRouter;

@@ -9,6 +9,7 @@ export const files = pgTable(
 		verboseName: varchar('verboseName', { length: 256 }).notNull(),
 		size: real('size').notNull(),
 		uploadedAt: timestamp('uploadedAt').notNull().defaultNow(),
+		path: varchar('path').notNull(),
 	},
 )
 

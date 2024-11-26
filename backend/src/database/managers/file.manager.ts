@@ -5,12 +5,12 @@ import { files } from "@database/schema/file/file.schema";
 import { relatedFiles } from "@database/schema/file/file.schema";
 
 const FileManager = {
-    createFile: async (name: string, verboseName: string, size: number, catalogId: number) => {
+    createFile: async (name: string, verboseName: string, size: number, catalogId: number, fullPath: string) => {
       return await db.transaction(async (tx) => {
         const file = (
           await tx
             .insert(files)
-            .values({ name, verboseName, size })
+            .values({ name, verboseName, size, path: fullPath })
             .returning({
               id: files.id,
               name: files.name,
@@ -37,6 +37,9 @@ const FileManager = {
       return (await db
         .select().from(files).where(eq(files.id, id)))?.[0];
     },
+    getFileByName: async (name: string) => {
+      return (await db.select().from(files).where(eq(files.name, name)))?.[0];
+    }
   }
   
   export default FileManager;

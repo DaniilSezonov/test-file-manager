@@ -6,6 +6,7 @@ type DirectoryControlMenuProps = {
   className?: string;
   currentCatalogId: string;
   onFileUploaded?: (data: {id: number, name: string, size: number, verboseName: string}) => void;
+  onCatalogCreated?: (data: {id: number, name: string}) => void;
 };
 
 type MenuItemProps = {
@@ -20,9 +21,16 @@ const MenuItem: FC<PropsWithChildren<MenuItemProps>> = ({ children, onClick }) =
   </div>
 );
 
-const DirectoryControlMenu: FC<DirectoryControlMenuProps> = ({ className, currentCatalogId, onFileUploaded }) => {
-  // await backend.files.index.post({})
+const DirectoryControlMenu: FC<DirectoryControlMenuProps> = ({ className, currentCatalogId, onFileUploaded, onCatalogCreated }) => {
   const ref = useRef<HTMLInputElement>(null);
+  const createCatalog = async () => {
+    const catalog = await backend.catalog.index.post({
+      name: "New catalog",
+      parentCatalogID: parseInt(currentCatalogId),
+    },{ fetch: { credentials: "include" }});
+    if (catalog.data)
+      onCatalogCreated?.(catalog.data);
+  }
   return (
     <div className={classNames("flex gap-4", className)}>
       <input
@@ -37,7 +45,11 @@ const DirectoryControlMenu: FC<DirectoryControlMenuProps> = ({ className, curren
           }
         }}
       />
-      <MenuItem>Create Catalog</MenuItem>
+      <MenuItem onClick={() => {
+        createCatalog();
+      }}>
+        Create Catalog
+      </MenuItem>
       <MenuItem onClick={() => {
         ref?.current?.click();
       }}>

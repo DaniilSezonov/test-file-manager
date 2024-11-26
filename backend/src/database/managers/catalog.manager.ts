@@ -63,6 +63,11 @@ const CatalogManager = {
       .innerJoin(files, eq(files.id, relatedFiles.itemFile));
     return { catalogs: childCatalogs, files: childFiles };
   },
+  renameCatalog: async (catalogId: number, name: string) => {
+    return (
+      await db.update(catalogs).set({name: name}).where(eq(catalogs.id, catalogId))
+    )
+  },
   getRootUserCatalog: async (userId: number) => {
     return (
       await db

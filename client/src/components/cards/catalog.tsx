@@ -1,4 +1,5 @@
-import { FC, useState } from "react";
+import backend from "@backend";
+import { FC, useEffect, useState } from "react";
 
 type CatalogCardProps = {
   id: number;
@@ -9,6 +10,13 @@ type CatalogCardProps = {
 const CatalogCard: FC<CatalogCardProps> = ({ id, name, onOpen }) => {
   const [isRename, setIsRename] = useState(false);
   const [currentName, setCurrentName] = useState(name);
+  useEffect(() => {
+    if (!isRename && name !== currentName) {
+      backend.catalog.id({id: id.toString()}).patch({
+        name: currentName,
+      }, {fetch: { credentials: "include" }})
+    }
+  }, [isRename])
   return (
     <div
       className="grid relative min-w-[75px] min-h-[75px] grid-rows-[75px_auto] cursor-pointer gap-2"
@@ -23,6 +31,9 @@ const CatalogCard: FC<CatalogCardProps> = ({ id, name, onOpen }) => {
         }}
       />
       {isRename && <input
+        onKeyDown={(event) => {if (event.key === "Enter") {
+          setIsRename(false);
+        }}}
         className="max-w-[75px] max-h-[1.5rem] bg-transparent text-gray-50 text-center bg-slate-600"
         onChange={(event) => setCurrentName(event.target.value)}
         value={currentName}

@@ -3,7 +3,7 @@ import { FC } from "react";
 
 type BreadcrumbsProps = {
   path: {
-    id: string;
+    id: number;
     name: string;
   }[];
   onBackButtonClick: () => void;

@@ -9,7 +9,7 @@ import DirectoryControlMenu from "@components/menu/directory-control";
 
 const FileManagerPage: FC = () => {
   const [currentPath, setCurrentPath] = useState<
-    { id: string; name: string }[]
+    { id: number; name: string }[]
   >([]);
   const { value: currentUser, execute: fetchCurrentUser } = useAsync(
     async () => {
@@ -19,7 +19,7 @@ const FileManagerPage: FC = () => {
     },
   );
   const { value: currentCatalogContent, execute: fetchCurrentCatalogContent } =
-    useAsync(async (id: string) => {
+    useAsync(async (id: number) => {
       if (!id) return;
       return await backend.catalog
         .id({ id: id })
@@ -55,12 +55,16 @@ const FileManagerPage: FC = () => {
     size: number;
     verboseName: string;
   }[]>([]);
+  const [newCatalogs, setNewCatalogs] = useState<{id: number, name: string}[]>([]);
   return (
     <AuthorizedLayout userName={currentUser?.data?.name}>
       <DirectoryControlMenu
         className="py-4 w-full"
         onFileUploaded={(data) => {
           setUploadedFiles((prev) => prev.concat(data));
+        }}
+        onCatalogCreated={(data) => {
+          setNewCatalogs((value) => value.concat(data));
         }}
         currentCatalogId={currentCatalog.id} 
       />
@@ -78,8 +82,21 @@ const FileManagerPage: FC = () => {
           });
         }}
       />
-      <div className="grid justify-items-start grid-flow-col justify-start gap-4">
+      <div className="grid grid-cols-[repeat(auto-fill,75px)] justify-start gap-4">
         {currentCatalogContent?.data?.contains?.catalogs.map((item: any) => (
+          <CatalogCard
+            key={item.id}
+            name={item.name}
+            id={item.id}
+            onOpen={() => {
+              setCurrentPath((prev) =>
+                prev.concat({ id: item.id, name: item.name }),
+              );
+              fetchCurrentCatalogContent(item.id);
+            }}
+          />
+        ))}
+        {newCatalogs.map((item) => (
           <CatalogCard
             key={item.id}
             name={item.name}

@@ -58,6 +58,22 @@ export default new Elysia({ name: "catalog" }).use(authPlugin).group(
             tags: ["CatalogRoutes"],
           },
         },
-      ),
+      )
+      .patch(
+        "/id/:id",
+        async ({params: { id }, body}) => {
+          const { name } = body;
+          return await CatalogManager.renameCatalog(parseFloat(id), name);
+        },
+        {
+          body: t.Object({
+            name: t.String({ minLength: 1 }),
+          }),
+          detail: {
+            description: "Update catalog",
+            tags: ["CatalogRoutes"],
+          },
+        },
+      )
   // .delete("/")
 );

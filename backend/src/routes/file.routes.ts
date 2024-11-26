@@ -7,14 +7,8 @@ export default new Elysia({ name: "file" }).use(authPlugin).group(
   "/files",
   (app) =>
     app
-      .get("/", async () => [], {
-        detail: {
-          description: "List file",
-          tags: ["FileRoutes"],
-        },
-      })
       .get(
-        "/:fileName/download",
+        "/id/:fileName/download",
         async ({ params: { fileName }, set }) => {
           const { result: file, status } =
             await FileService.getFileByName(fileName);

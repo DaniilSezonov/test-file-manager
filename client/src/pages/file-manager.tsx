@@ -114,6 +114,7 @@ const FileManagerPage: FC = () => {
             key={item.id}
             id={item.id}
             name={item.name}
+            verboseName={item.verboseName}
             size={item.size}
             extension={item.verboseName.split(".")?.[1] ?? undefined}
           />
@@ -123,6 +124,7 @@ const FileManagerPage: FC = () => {
             key={item.id}
             id={item.id}
             name={item.name}
+            verboseName={item.verboseName}
             size={item.size}
             extension={item.verboseName.split(".")?.[1] ?? undefined}
           />

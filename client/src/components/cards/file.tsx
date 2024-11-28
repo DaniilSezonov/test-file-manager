@@ -4,6 +4,7 @@ import { FC } from "react";
 type FileCardProps = {
   id: number;
   name: string;
+  verboseName?: string;
   size: number;
   extension?: string;
 };
@@ -16,6 +17,7 @@ const downloadFile = (data: Blob, name = 'file') => {
 const FileCard: FC<FileCardProps> = ({
   id,
   name,
+  verboseName,
   size,
   extension,
 }) => {
@@ -23,6 +25,7 @@ const FileCard: FC<FileCardProps> = ({
     <div
       onClick={async () => {
         const data = await backend.files.id({fileName: name}).download.get({fetch: {credentials: "include"}});
+        console.log(typeof data.data)
         downloadFile(data.data as unknown as Blob);
       }}
       className="grid relative min-w-[75px] min-h-[75px] grid-rows-[75px_auto] cursor-pointer gap-2 rounded-tr-[25px] overflow-x-hidden"
@@ -32,7 +35,7 @@ const FileCard: FC<FileCardProps> = ({
         {extension?.length  && extension?.length < 5 ? extension?.toUpperCase() : ""}
       </div>
       <div className="mt-[-5px] text-center overflow-hidden max-w-[75px] max-h-[1.5rem] text-ellipsis">
-        {name}
+        {verboseName ?? name}
       </div>
     </div>
   );

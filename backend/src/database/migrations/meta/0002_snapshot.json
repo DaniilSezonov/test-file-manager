@@ -145,7 +145,7 @@
     },
     "public.relatedFiles": {
       "name": "relatedFiles",
-      "schema": "",
+      "schema": "",ДЭ
       "columns": {
         "id": {
           "name": "id",

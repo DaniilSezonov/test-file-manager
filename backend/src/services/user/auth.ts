@@ -12,18 +12,26 @@ const AuthService = {
       email: string;
     }>
   > => {
-    if (await UserManager.isEmailExists(email)) {
+    // if (await UserManager.isEmailExists(email)) {
+    //   return {
+    //     status: Statuses.BAD_REQUEST,
+    //     msg: "Already registered.",
+    //   };
+    // }
+    const hashedPass = await Bun.password.hash(password);
+    try {
+      const instance = await UserManager.createUser(email, hashedPass, name);
+      return {
+        status: Statuses.OK,
+        result: instance,
+      };
+    }
+    catch (e) {
       return {
         status: Statuses.BAD_REQUEST,
         msg: "Already registered.",
-      };
-    }
-    const hashedPass = await Bun.password.hash(password);
-    const instance = await UserManager.createUser(email, hashedPass, name);
-    return {
-      status: Statuses.OK,
-      result: instance,
-    };
+      }
+    } 
   },
   signIn: async (
     email: string,
